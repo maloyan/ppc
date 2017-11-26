@@ -18,6 +18,8 @@ void verify();
 
 int main(int an, char **as)
 {
+	double start = omp_get_wtime();
+
 	int it;
 	
 	init();
@@ -31,6 +33,8 @@ int main(int an, char **as)
 	}
 	
 	verify();
+	double finish = omp_get_wtime();
+    printf("time = %lf\n", finish - start);
 	return 0;
 }
 

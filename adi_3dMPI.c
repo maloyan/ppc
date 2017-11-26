@@ -32,8 +32,8 @@ static int indexNum(int i, int j, int k)
 
 int main(int argc, char **argv)
 {
-
 	MPI_Init(&argc, &argv);
+	double start = MPI_Wtime();
 	MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	
@@ -54,7 +54,9 @@ int main(int argc, char **argv)
 	}
 	
 	verify();
+	double finish = MPI_Wtime();
 	MPI_Finalize();
+	printf("time = %lf\n", finish - start);
 	return 0;
 }
 
