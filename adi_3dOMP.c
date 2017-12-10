@@ -4,7 +4,7 @@
 #include <omp.h>
 #define  Max(a,b) ((a)>(b)?(a):(b))
 
-#define  N   (2*2*2*2*2*2+2)
+#define  N   225//(2*2*2*2*2*2+2)
 double   maxeps = 0.1e-7;
 int itmax = 100;
 int i,j,k;
@@ -28,13 +28,13 @@ int main(int an, char **as)
 	{
 		eps = 0.;
 		relax();
-		printf( "it=%4i   eps=%f\n", it,eps);
+		//printf( "it=%4i   eps=%f\n", it,eps);
 		if (eps < maxeps) break;
 	}
 	
 	verify();
 	double finish = omp_get_wtime();
-    printf("time = %lf\n", finish - start);
+    printf("%lf\n", finish - start);
 	return 0;
 }
 
@@ -54,26 +54,25 @@ void init()
 }
 void relax()
 {
-	#pragma omp parallel for private(i, j, k)
+	for(i=1; i<=N-2; i++)	
+	#pragma omp parallel for private(j, k)
 	for(j=1; j<=N-2; j++)
-	for(i=1; i<=N-2; i++)
 	for(k=1; k<=N-2; k++)
 	{
 		A[i][j][k] = (A[i-1][j][k]+A[i+1][j][k])/2.;
 	}
-
-	#pragma omp parallel for private(i, j, k)
-	for(i=1; i<=N-2; i++)
 	for(j=1; j<=N-2; j++)
+	#pragma omp parallel for private(i, k)
+	for(i=1; i<=N-2; i++)
 	for(k=1; k<=N-2; k++)
 	{
 		A[i][j][k] =(A[i][j-1][k]+A[i][j+1][k])/2.;
 	}
 
-	#pragma omp parallel for private(i, j, k)
+	for(k=1; k<=N-2; k++)
+	#pragma omp parallel for private(i, j)
 	for(i=1; i<=N-2; i++)
 	for(j=1; j<=N-2; j++)
-	for(k=1; k<=N-2; k++)
 	{
 		
 		double e;
@@ -100,6 +99,6 @@ void verify()
 	{
 		s=s+A[i][j][k]*(i+1)*(j+1)*(k+1)/(N*N*N);
 	}
-	printf("  S = %f\n",s);
+	//printf("  S = %f\n",s);
 	
 }
